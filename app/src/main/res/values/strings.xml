@@ -264,6 +264,7 @@
     <string name="grid_style_golden_triangle">Golden Triangle</string>
     <string name="grid_style_golden_spiral">Golden Spiral</string>
     <string name="settings_use_jpg_max">Multi-frame denoise</string>
+    <string name="settings_use_50mp">50MP Ultra-Res</string>
     <string name="settings_use_raw_max">HDR+</string>
     <string name="settings_raw_max_spatial_mode">HDR+ merge mode</string>
     <string name="settings_raw_max_spatial_mode_description">Spatial supports bracket exposure to preserve highlight and shadow detail. Sabre merges same-exposure frames for noise reduction and disables bracket exposure.</string>
@@ -433,6 +434,14 @@
     <string name="settings_vendor_capture_vivo_sensor_mode">vivo force sensor mode</string>
     <string name="settings_vendor_capture_mtk_raw_bpp">MediaTek RAW bit depth</string>
     <string name="settings_vendor_capture_oplus_agingtest_mode">Oplus aging test mode</string>
+    <string name="settings_vendor_capture_mtk_isp_edge_level">MediaTek ISP Edge Sharpness Level</string>
+    <string name="settings_vendor_capture_mtk_isp_contrast_level">MediaTek ISP Contrast Level</string>
+    <string name="settings_vendor_capture_mtk_isp_texture_level">MediaTek ISP Texture Level</string>
+    <string name="settings_vendor_capture_mtk_packed_raw">MediaTek Packed RAW (10-bit)</string>
+    <string name="settings_vendor_capture_mtk_process_raw">MediaTek Process RAW</string>
+    <string name="settings_vendor_capture_mtk_zsl_mode">MediaTek ZSL Mode</string>
+    <string name="settings_vendor_capture_mtk_single_yuv_nr">MediaTek Single-frame YUV NR</string>
+    <string name="settings_vendor_capture_mtk_remosaic_enable">MediaTek Hardware Remosaic (50MP)</string>
     <string name="settings_vendor_capture_value_label">Value</string>
     <string name="settings_vendor_capture_int_value">Int value</string>
     <string name="settings_vendor_capture_byte_value">Byte value, -128 to 127</string>

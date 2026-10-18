@@ -111,6 +111,9 @@ fun CameraTopSheet(
     onJpgMaxToggle: (Boolean) -> Unit,
     useMultipleExposure: Boolean,
     onMultipleExposureToggle: (Boolean) -> Unit,
+    is50MpSupported: Boolean = false,
+    useHighRes50Mp: Boolean = false,
+    onHighRes50MpToggle: (Boolean) -> Unit = {},
     contentTopPadding: Dp = CameraTopSheetContentTopPadding,
     modifier: Modifier = Modifier
 ) {
@@ -209,6 +212,14 @@ fun CameraTopSheet(
                                 title = stringResource(R.string.settings_use_multiple_exposure),
                                 checked = useMultipleExposure,
                                 onCheckedChange = onMultipleExposureToggle,
+                                modifier = itemModifier
+                            )
+                        }
+                        if (is50MpSupported) {
+                            QuickSettingToggle(
+                                title = stringResource(R.string.settings_use_50mp),
+                                checked = useHighRes50Mp,
+                                onCheckedChange = onHighRes50MpToggle,
                                 modifier = itemModifier
                             )
                         }

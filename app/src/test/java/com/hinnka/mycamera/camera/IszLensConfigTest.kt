@@ -105,6 +105,24 @@ class IszLensConfigTest {
     }
 
     @Test
+    fun vendorCaptureSettings_mtkAntiOverprocessingKeys_useExpectedDefaults() {
+        val settings = VendorCaptureSettings(
+            mapOf(
+                VendorCaptureKey.MTK_ISP_EDGE_LEVEL to 0,
+                VendorCaptureKey.MTK_PACKED_RAW_ENABLE to 1,
+                VendorCaptureKey.MTK_REMOSAIC_ENABLE to 1
+            )
+        )
+
+        assertEquals(0, settings.valueFor(VendorCaptureKey.MTK_ISP_EDGE_LEVEL))
+        assertEquals(1, settings.valueFor(VendorCaptureKey.MTK_PACKED_RAW_ENABLE))
+        assertEquals(1, settings.valueFor(VendorCaptureKey.MTK_REMOSAIC_ENABLE))
+        assertEquals("com.mediatek.ispfeature.controlEdgeLevel", VendorCaptureKey.MTK_ISP_EDGE_LEVEL.requestKeyName)
+        assertEquals("com.mediatek.control.capture.packedRaw.enable", VendorCaptureKey.MTK_PACKED_RAW_ENABLE.requestKeyName)
+        assertEquals("com.mediatek.control.capture.remosaicenable", VendorCaptureKey.MTK_REMOSAIC_ENABLE.requestKeyName)
+    }
+
+    @Test
     fun rawBlackBorderCrop_scaledForOutputMapsEveryMarginToRawMaxGrid() {
         val nativeCrop = RawBlackBorderCrop(
             leftPx = 7,

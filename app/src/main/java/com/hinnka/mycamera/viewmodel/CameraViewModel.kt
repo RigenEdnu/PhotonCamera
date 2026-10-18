@@ -511,6 +511,7 @@ private data class CameraFeatureUpdate(
     val effects: SettingValue<EffectParams>? = null,
     val aspectRatio: SettingValue<AspectRatio>? = null,
     val useRaw: SettingValue<Boolean>? = null,
+    val useHighRes50Mp: SettingValue<Boolean>? = null,
     val useJpgMax: SettingValue<Boolean>? = null,
     val useRawMax: SettingValue<Boolean>? = null,
     val ultraHdrGainMapEnabled: SettingValue<Boolean>? = null,
@@ -965,12 +966,14 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         val prefs = userPreferencesRepository.userPreferences.first()
         var desiredUseRaw = prefs.useRaw
+        var desiredUseHighRes50Mp = prefs.useHighRes50Mp
         var desiredUseJpgMax = prefs.useJpgMax
         var desiredUseRawMax = prefs.useRawMax
         var desiredUseMultipleExposure = prefs.useMultipleExposure
         var desiredRawRenderingEngine = prefs.rawRenderingEngine
 
         update.useRaw?.let { desiredUseRaw = it.value }
+        update.useHighRes50Mp?.let { desiredUseHighRes50Mp = it.value }
         update.useJpgMax?.let { desiredUseJpgMax = it.value }
         update.useRawMax?.let { desiredUseRawMax = it.value }
         update.useMultipleExposure?.let { desiredUseMultipleExposure = it.value }
@@ -1038,6 +1041,9 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
             cameraController.setAspectRatio(it.value)
         }
 
+        if (update.useHighRes50Mp != null || desiredUseHighRes50Mp != prefs.useHighRes50Mp) {
+            cameraController.setUseHighRes50Mp(desiredUseHighRes50Mp)
+        }
         if (desiredUseMultipleExposure != prefs.useMultipleExposure) {
             if (!desiredUseMultipleExposure) {
                 cancelMultipleExposureSession()
@@ -1141,6 +1147,11 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                 aspectRatio = update.aspectRatio?.let { PreferenceUpdateValue(it.value.name) },
                 useRaw = if (update.useRaw != null || desiredUseRaw != prefs.useRaw) {
                     PreferenceUpdateValue(desiredUseRaw)
+                } else {
+                    null
+                },
+                useHighRes50Mp = if (update.useHighRes50Mp != null || desiredUseHighRes50Mp != prefs.useHighRes50Mp) {
+                    PreferenceUpdateValue(desiredUseHighRes50Mp)
                 } else {
                     null
                 },
@@ -1711,6 +1722,10 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         private set
     var availableRawNoiseProfiles: List<RawNoiseProfileInfo> by mutableStateOf(emptyList())
         private set
+    val useHighRes50Mp: StateFlow<Boolean> = userPreferencesRepository.userPreferences
+        .map { it.useHighRes50Mp }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     val useJpgMax: StateFlow<Boolean> = userPreferencesRepository.userPreferences
         .map { it.useJpgMax }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
@@ -2234,6 +2249,9 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                 if (currentCameraState.useRaw != effectiveUseRaw) {
                     cameraController.setUseRaw(effectiveUseRaw)
                 }
+                if (currentCameraState.useHighRes50Mp != it.useHighRes50Mp) {
+                    cameraController.setUseHighRes50Mp(it.useHighRes50Mp)
+                }
                 if (currentCameraState.multiFrameOutputScale != effectiveMultiFrameOutputScale) {
                     cameraController.setMultiFrameOutputScale(effectiveMultiFrameOutputScale)
                 }
@@ -2530,6 +2548,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
                         jpgMultiFrameDenoiseOutputScale = prefs.jpgMultiFrameDenoiseOutputScale,
                     )
                 )
+                cameraController.setUseHighRes50Mp(prefs.useHighRes50Mp)
                 cameraController.setJpgMultiFrameDenoiseFrameCount(
                     prefs.jpgMultiFrameDenoiseFrameCount
                 )
@@ -4946,6 +4965,14 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // ==================== 延时拍摄和网格线相关方法 ====================
+
+    fun setUseHighRes50Mp(enabled: Boolean) {
+        viewModelScope.launch {
+            applyCameraFeatureUpdate(
+                CameraFeatureUpdate(useHighRes50Mp = SettingValue(enabled))
+            )
+        }
+    }
 
     /** 拍照模式：YUV 多帧降噪。 */
     fun setUseJpgMax(enabled: Boolean) {

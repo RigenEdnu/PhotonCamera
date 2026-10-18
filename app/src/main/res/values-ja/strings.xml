@@ -468,6 +468,7 @@
     <string name="settings_photo_preview_stabilization">写真プレビュー手ブレ補正</string>
     <string name="camera_preview_stabilization">プレビュー手ブレ補正</string>
     <string name="settings_use_jpg_max">マルチフレームNR</string>
+    <string name="settings_use_50mp">50MP超高解像度</string>
     <string name="settings_raw_max_spatial_mode">HDR+合成モード</string>
     <string name="settings_raw_max_spatial_mode_description">Spatialはブラケット露出を使ってハイライトとシャドウのディテールを保持します。Sabreは同一露出フレームを合成してノイズ低減し、ブラケット露出は無効になります。</string>
     <string name="settings_use_multiple_exposure">多重露光</string>
@@ -572,6 +573,14 @@
     <string name="settings_vendor_capture_vivo_sensor_mode">vivoセンサーモード強制</string>
     <string name="settings_vendor_capture_mtk_raw_bpp">MediaTek RAWビット深度</string>
     <string name="settings_vendor_capture_oplus_agingtest_mode">Oplusエージングテストモード</string>
+    <string name="settings_vendor_capture_mtk_isp_edge_level">MediaTek ISPエッジシャープネス</string>
+    <string name="settings_vendor_capture_mtk_isp_contrast_level">MediaTek ISPコントラスト</string>
+    <string name="settings_vendor_capture_mtk_isp_texture_level">MediaTek ISPテクスチャ</string>
+    <string name="settings_vendor_capture_mtk_packed_raw">MediaTek パックドRAW (10-bit)</string>
+    <string name="settings_vendor_capture_mtk_process_raw">MediaTek プロセスRAW</string>
+    <string name="settings_vendor_capture_mtk_zsl_mode">MediaTek ZSLモード</string>
+    <string name="settings_vendor_capture_mtk_single_yuv_nr">MediaTek 単一フレームYUV NR</string>
+    <string name="settings_vendor_capture_mtk_remosaic_enable">MediaTek ハードウェアRemosaic (50MP)</string>
     <string name="settings_vendor_capture_value_label">値</string>
     <string name="settings_vendor_capture_int_value">整数値</string>
     <string name="settings_vendor_capture_byte_value">Byte値（-128～127）</string>

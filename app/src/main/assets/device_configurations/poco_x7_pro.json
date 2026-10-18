@@ -1,0 +1,30 @@
+{
+  "format": "photon_device_configuration",
+  "version": 1,
+  "name": "POCO X7 Pro",
+  "manufacturer": "Xiaomi",
+  "models": [
+    "2412DPC0AG",
+    "2412DPC0AI",
+    "24127RK2CC"
+  ],
+  "overrides": {
+    "preferred_main_camera_id": "0",
+    "edge_level": 0,
+    "nr_level": 0,
+    "video_edge_level": 0,
+    "video_nr_level": 0,
+    "raw_lens_shading_correction_enabled": false,
+    "vendor_capture_settings": {
+      "0": {
+        "mtk_isp_edge_level": 0,
+        "mtk_isp_contrast_level": 0,
+        "mtk_isp_texture_level": 0,
+        "mtk_packed_raw_enable": 1,
+        "mtk_process_raw_enable": 0,
+        "mtk_zsl_mode": 1,
+        "mtk_single_yuv_nr": 0
+      }
+    }
+  }
+}

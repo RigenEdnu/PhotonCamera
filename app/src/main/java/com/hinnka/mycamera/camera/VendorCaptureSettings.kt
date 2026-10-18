@@ -161,6 +161,54 @@ enum class VendorCaptureKey(
         requestKeyName = "com.oplus.engineercamera.agingtest.mode.select",
         valueType = VendorCaptureValueType.BYTE,
         defaultValue = 0
+    ),
+    MTK_ISP_EDGE_LEVEL(
+        persistedName = "mtk_isp_edge_level",
+        requestKeyName = "com.mediatek.ispfeature.controlEdgeLevel",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
+    ),
+    MTK_ISP_CONTRAST_LEVEL(
+        persistedName = "mtk_isp_contrast_level",
+        requestKeyName = "com.mediatek.ispfeature.controlContrastLevel",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
+    ),
+    MTK_ISP_TEXTURE_LEVEL(
+        persistedName = "mtk_isp_texture_level",
+        requestKeyName = "com.mediatek.ispfeature.controlTextureLevel",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
+    ),
+    MTK_PACKED_RAW_ENABLE(
+        persistedName = "mtk_packed_raw_enable",
+        requestKeyName = "com.mediatek.control.capture.packedRaw.enable",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 1
+    ),
+    MTK_PROCESS_RAW_ENABLE(
+        persistedName = "mtk_process_raw_enable",
+        requestKeyName = "com.mediatek.control.capture.processRaw.enable",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
+    ),
+    MTK_ZSL_MODE(
+        persistedName = "mtk_zsl_mode",
+        requestKeyName = "com.mediatek.control.capture.zsl.mode",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 1
+    ),
+    MTK_SINGLE_YUV_NR(
+        persistedName = "mtk_single_yuv_nr",
+        requestKeyName = "com.mediatek.control.capture.singleYuvNr",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
+    ),
+    MTK_REMOSAIC_ENABLE(
+        persistedName = "mtk_remosaic_enable",
+        requestKeyName = "com.mediatek.control.capture.remosaicenable",
+        valueType = VendorCaptureValueType.INT,
+        defaultValue = 0
     );
 
     fun normalizeValue(value: Int): Int {

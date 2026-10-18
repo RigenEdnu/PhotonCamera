@@ -254,6 +254,7 @@
     <string name="grid_style_golden_triangle">黄金三角</string>
     <string name="grid_style_golden_spiral">黄金螺旋</string>
     <string name="settings_use_jpg_max">多帧降噪</string>
+    <string name="settings_use_50mp">5000万超清</string>
     <string name="settings_use_raw_max">HDR+</string>
     <string name="settings_raw_max_spatial_mode">HDR+ 融合模式</string>
     <string name="settings_raw_max_spatial_mode_description">Spatial 支持包围曝光，保留高光与暗部细节；Sabre 融合相同曝光的多帧以降低噪点，并禁用包围曝光。</string>
@@ -420,6 +421,14 @@
     <string name="settings_vendor_capture_vivo_sensor_mode">vivo 强制传感器模式</string>
     <string name="settings_vendor_capture_mtk_raw_bpp">MediaTek RAW 位深</string>
     <string name="settings_vendor_capture_oplus_agingtest_mode">Oplus Aging Test 模式</string>
+    <string name="settings_vendor_capture_mtk_isp_edge_level">MediaTek ISP 边缘锐化等级</string>
+    <string name="settings_vendor_capture_mtk_isp_contrast_level">MediaTek ISP 对比度等级</string>
+    <string name="settings_vendor_capture_mtk_isp_texture_level">MediaTek ISP 纹理等级</string>
+    <string name="settings_vendor_capture_mtk_packed_raw">MediaTek 打包 RAW (10-bit)</string>
+    <string name="settings_vendor_capture_mtk_process_raw">MediaTek 处理 RAW</string>
+    <string name="settings_vendor_capture_mtk_zsl_mode">MediaTek ZSL 模式</string>
+    <string name="settings_vendor_capture_mtk_single_yuv_nr">MediaTek 单帧 YUV 降噪</string>
+    <string name="settings_vendor_capture_mtk_remosaic_enable">MediaTek 硬件 Remosaic (50MP)</string>
     <string name="settings_vendor_capture_value_label">数值</string>
     <string name="settings_vendor_capture_int_value">Int 数值</string>
     <string name="settings_vendor_capture_byte_value">Byte 数值，范围 -128 到 127</string>

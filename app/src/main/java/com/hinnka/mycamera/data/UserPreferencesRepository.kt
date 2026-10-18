@@ -198,6 +198,7 @@ data class UserPreferences(
     val lutSelectorMode: LutSelectorMode = LutSelectorMode.Style,
     val defaultFocalLength: Float = 0f, // 默认焦段 (mm)，0表示不设置
     val zoomDisplayMode: String = "FOCAL_LENGTH",
+    val useHighRes50Mp: Boolean = false,
     val useJpgMax: Boolean = false, // YUV 多帧降噪
     val useJpgMaxHdrComposition: Boolean = false, // 多帧降噪固定不启用包围曝光
     val jpgMultiFrameDenoiseFrameCount: Int = MultiFrameConfig.DEFAULT_DENOISE_FRAME_COUNT,
@@ -326,6 +327,7 @@ data class CameraFeaturePreferencesUpdate(
     val effects: PreferenceUpdateValue<EffectParams>? = null,
     val aspectRatio: PreferenceUpdateValue<String>? = null,
     val useRaw: PreferenceUpdateValue<Boolean>? = null,
+    val useHighRes50Mp: PreferenceUpdateValue<Boolean>? = null,
     val useJpgMax: PreferenceUpdateValue<Boolean>? = null,
     val useRawMax: PreferenceUpdateValue<Boolean>? = null,
     val ultraHdrGainMapEnabled: PreferenceUpdateValue<Boolean>? = null,
@@ -467,6 +469,9 @@ class UserPreferencesRepository(private val context: Context) {
         // 默认焦段 Key
         private val DEFAULT_FOCAL_LENGTH = floatPreferencesKey("default_focal_length")
         private val ZOOM_DISPLAY_MODE = stringPreferencesKey("zoom_display_mode")
+
+        // 50MP Key
+        private val USE_HIGH_RES_50MP = booleanPreferencesKey("use_high_res_50mp")
 
         // 多帧合成 Key
         private val USE_JPG_MAX = booleanPreferencesKey("use_jpg_max")
@@ -795,6 +800,7 @@ class UserPreferencesRepository(private val context: Context) {
                 }.getOrDefault(LutSelectorMode.Style),
                 defaultFocalLength = preferences[DEFAULT_FOCAL_LENGTH] ?: 0f,
                 zoomDisplayMode = preferences[ZOOM_DISPLAY_MODE] ?: "FOCAL_LENGTH",
+                useHighRes50Mp = preferences[USE_HIGH_RES_50MP] ?: false,
                 useJpgMax = useJpgMax,
                 useJpgMaxHdrComposition = false,
                 jpgMultiFrameDenoiseFrameCount = preferences[JPG_MULTI_FRAME_DENOISE_FRAME_COUNT]
@@ -2155,6 +2161,12 @@ class UserPreferencesRepository(private val context: Context) {
     /**
      * 保存是否使用多重曝光
      */
+    suspend fun saveUseHighRes50Mp(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[USE_HIGH_RES_50MP] = enabled
+        }
+    }
+
     suspend fun saveUseMultipleExposure(enabled: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[USE_MULTIPLE_EXPOSURE] = enabled
@@ -2630,6 +2642,9 @@ class UserPreferencesRepository(private val context: Context) {
             }
             update.useRaw?.let {
                 preferences[USE_RAW] = it.value
+            }
+            update.useHighRes50Mp?.let {
+                preferences[USE_HIGH_RES_50MP] = it.value
             }
             update.useJpgMax?.let {
                 preferences[USE_JPG_MAX] = it.value

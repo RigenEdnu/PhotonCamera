@@ -58,6 +58,8 @@ internal object SrgbSharpnessShader {
             float blurLuma = luminance(blur);
             float delta = centerLuma - blurLuma;
             float detail = sign(delta) * max(abs(delta) - uThreshold, 0.0);
+            // Anti-overprocessing: clamp high frequency delta to prevent white edge halo artifacts
+            detail = clamp(detail, -0.06, 0.06);
             float sharpeningStrength = uSharpening > 0.0
                 ? uSharpening * 2.0
                 : uSharpening;

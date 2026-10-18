@@ -371,6 +371,8 @@ data class CameraState(
     val vendorCaptureSettingsByLens: VendorCaptureSettingsByLens = VendorCaptureSettingsByLens.Empty,
     val customVendorKeySettings: CustomVendorKeySettings = CustomVendorKeySettings.Empty,
 
+    val is50MpSupported: Boolean = false,
+    val useHighRes50Mp: Boolean = false,
     val isRawSupported: Boolean = false,
     val rawCfaCorrectionModes: Map<String, String> = emptyMap(),
     val multiFrameOutputScale: Float? = null,

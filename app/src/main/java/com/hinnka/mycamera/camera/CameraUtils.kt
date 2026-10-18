@@ -115,9 +115,15 @@ object CameraUtils {
     fun getBestCaptureSize(
         characteristics: CameraCharacteristics,
         aspectRatio: AspectRatio,
-        format: Int = ImageFormat.YUV_420_888
+        format: Int = ImageFormat.YUV_420_888,
+        preferHighRes: Boolean = false
     ): Size {
         return try {
+            if (preferHighRes) {
+                val highResConfigs = HighResolutionHelper.getHighResolutionConfigs(characteristics)
+                val highResMatch = highResConfigs.firstOrNull { it.pixels >= HighResolutionHelper.MP_48 }?.size
+                if (highResMatch != null) return highResMatch
+            }
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val sizes = map?.getOutputSizes(format)
                 ?: map?.getOutputSizes(ImageFormat.YUV_420_888)

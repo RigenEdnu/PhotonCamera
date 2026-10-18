@@ -1083,6 +1083,7 @@ class Camera2Controller(private val context: Context) {
     private fun resolveImageReaderMaxImages(): Int = CAPTURE_READER_MAX_IMAGES
 
     private fun captureImageRequestCount(state: CameraState, reader: ImageReader): Int = when {
+        state.useHighRes50Mp -> 1
         shouldUseJpgMaxHdrCapture(state, isRawCaptureReader(reader)) && !shouldUseMultiFrameTorch(state) ->
             buildHdrBracketEvOffsets(resolveHdrBracketZeroEvFrameCount(state)).size
         state.requiresMultiFrameCaptureSequence -> state.activeMultiFrameCount
@@ -2668,6 +2669,7 @@ class Camera2Controller(private val context: Context) {
                 awbColorTemperatureRange = loadAwbColorTemperatureRange(openCharacteristics)
                 lastWhiteBalanceResult = null
                 isRawSupported = resolveRawCaptureOutput(capabilityCharacteristics, outputPhysicalCameraId) != null
+                val is50MpSupported = HighResolutionHelper.getMegapixelOptions(openCharacteristics).maxMegapixels >= 48
 
                 availableAeModes =
                     openCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES) ?: intArrayOf()
@@ -2738,6 +2740,8 @@ class Camera2Controller(private val context: Context) {
                     currentState.copy(
                         useRaw = requestedRawCaptureEnabled,
                         isRawSupported = isRawSupported,
+                        is50MpSupported = is50MpSupported,
+                        useHighRes50Mp = currentState.useHighRes50Mp,
                         isP010Supported = isP010Supported,
                         availableNrModes = selectableNrModes,
                         supportsCctWhiteBalance = supportsCctWhiteBalance(),
@@ -2821,7 +2825,7 @@ class Camera2Controller(private val context: Context) {
                 val captureSize = if (rawOutput != null) {
                     rawOutput.size
                 } else {
-                    CameraUtils.getBestCaptureSize(outputCharacteristicsForStreams, aspectRatio, captureFormat)
+                    CameraUtils.getBestCaptureSize(outputCharacteristicsForStreams, aspectRatio, captureFormat, preferHighRes = _state.value.useHighRes50Mp)
                 }
 
                 val isP3Supported = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -4014,6 +4018,14 @@ class Camera2Controller(private val context: Context) {
             values = settings.values,
             target = if (isCapture) "capture" else "preview"
         )
+        if (isCapture && _state.value.useHighRes50Mp) {
+            try {
+                builder.set(
+                    CaptureRequest.Key(VendorCaptureKey.MTK_REMOSAIC_ENABLE.requestKeyName, Int::class.java),
+                    1
+                )
+            } catch (_: Exception) {}
+        }
     }
 
     private fun applyVendorCaptureSettings(
@@ -5368,6 +5380,19 @@ class Camera2Controller(private val context: Context) {
     /**
      * 设置是否使用 RAW 格式拍照
      */
+    fun setUseHighRes50Mp(enabled: Boolean) {
+        if (_state.value.useHighRes50Mp == enabled) return
+        _state.update { it.copy(useHighRes50Mp = enabled) }
+        PLog.d(TAG, "50MP setting changed: $enabled")
+        val surfaceTexture = previewSurfaceTexture ?: return
+        val handler = cameraHandler
+        if (handler != null && Looper.myLooper() != handler.looper) {
+            handler.post { openCamera(surfaceTexture) }
+            return
+        }
+        openCamera(surfaceTexture)
+    }
+
     fun setUseRaw(
         enabled: Boolean,
         reconfigureCaptureOutputIfNeeded: Boolean = true

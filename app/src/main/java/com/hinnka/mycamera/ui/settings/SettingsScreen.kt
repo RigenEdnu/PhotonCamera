@@ -5517,6 +5517,14 @@ private fun VendorCaptureKey.displayName(): String {
         VendorCaptureKey.VIVO_FORCE_SENSOR_MODE -> stringResource(R.string.settings_vendor_capture_vivo_sensor_mode)
         VendorCaptureKey.MTK_RAW_BPP -> stringResource(R.string.settings_vendor_capture_mtk_raw_bpp)
         VendorCaptureKey.OPLUS_AGINGTEST_MODE_SELECT -> stringResource(R.string.settings_vendor_capture_oplus_agingtest_mode)
+        VendorCaptureKey.MTK_ISP_EDGE_LEVEL -> stringResource(R.string.settings_vendor_capture_mtk_isp_edge_level)
+        VendorCaptureKey.MTK_ISP_CONTRAST_LEVEL -> stringResource(R.string.settings_vendor_capture_mtk_isp_contrast_level)
+        VendorCaptureKey.MTK_ISP_TEXTURE_LEVEL -> stringResource(R.string.settings_vendor_capture_mtk_isp_texture_level)
+        VendorCaptureKey.MTK_PACKED_RAW_ENABLE -> stringResource(R.string.settings_vendor_capture_mtk_packed_raw)
+        VendorCaptureKey.MTK_PROCESS_RAW_ENABLE -> stringResource(R.string.settings_vendor_capture_mtk_process_raw)
+        VendorCaptureKey.MTK_ZSL_MODE -> stringResource(R.string.settings_vendor_capture_mtk_zsl_mode)
+        VendorCaptureKey.MTK_SINGLE_YUV_NR -> stringResource(R.string.settings_vendor_capture_mtk_single_yuv_nr)
+        VendorCaptureKey.MTK_REMOSAIC_ENABLE -> stringResource(R.string.settings_vendor_capture_mtk_remosaic_enable)
     }
 }
 

@@ -18,6 +18,7 @@ import java.nio.ByteBuffer
 
 class DepthEstimator(context: Context) {
     private var interpreter: Interpreter? = null
+    private var gpuDelegate: org.tensorflow.lite.gpu.GpuDelegate? = null
     private var nnApiDelegate: NnApiDelegate? = null
     private var isInitialized = false
     private var inputWidth = 518
@@ -52,32 +53,67 @@ class DepthEstimator(context: Context) {
                 modelFingerprint = DepthModelManager.installedModelFingerprint(context)
             )
 
-            // The GPU delegate is deliberately not used: this model can compile but
-            // produce a constant map on affected Qualcomm GLES drivers.
-            PLog.d(TAG, "Depth model: trying NNAPI first")
-            try {
-                val nnApiOptions = Interpreter.Options()
-                nnApiDelegate = StartupTrace.measure("DepthEstimator.NnApiDelegate()") {
-                    val delegateOptions = NnApiDelegate.Options()
-                    delegateCache?.let {
-                        delegateOptions
-                            .setCacheDir(it.directory.absolutePath)
-                            .setModelToken(it.modelToken)
+            val isQualcommAdreno = (android.os.Build.HARDWARE ?: "").lowercase().contains("qcom") ||
+                (android.os.Build.SOC_MANUFACTURER ?: "").lowercase().contains("qualcomm")
+
+            // On ARM Mali (e.g. Dimensity 8400) and other non-Qualcomm GPUs, GPU delegate is safe and fast.
+            // On Qualcomm Adreno, GPU delegate can produce a constant map bug, so we prefer NNAPI for Qualcomm.
+            if (!isQualcommAdreno) {
+                try {
+                    val compatList = org.tensorflow.lite.gpu.CompatibilityList()
+                    if (compatList.isDelegateSupportedOnThisDevice) {
+                        val gpuOptions = Interpreter.Options()
+                        gpuDelegate = StartupTrace.measure("DepthEstimator.GpuDelegate()") {
+                            val delegateOptions = compatList.bestOptionsForThisDevice
+                            delegateCache?.let {
+                                delegateOptions.setSerializationParams(
+                                    it.directory.absolutePath,
+                                    it.modelToken
+                                )
+                            }
+                            org.tensorflow.lite.gpu.GpuDelegate(delegateOptions)
+                        }
+                        gpuOptions.addDelegate(gpuDelegate)
+                        interpreter = StartupTrace.measure("DepthEstimator.Interpreter(GPU)") {
+                            Interpreter(modelBuffer, gpuOptions)
+                        }
+                        isInitialized = true
+                        PLog.d(TAG, "Using GPU Delegate (Mali/Non-QCOM) for depth model")
                     }
-                    NnApiDelegate(delegateOptions)
+                } catch (e: Exception) {
+                    PLog.w(TAG, "Failed to initialize GPU delegate, falling back to NNAPI", e)
+                    gpuDelegate?.close()
+                    gpuDelegate = null
                 }
-                StartupTrace.measure("DepthEstimator.nnApiOptions.addDelegate") {
-                    nnApiOptions.addDelegate(nnApiDelegate)
+            }
+
+            // Fallback to NNAPI
+            if (!isInitialized) {
+                PLog.d(TAG, "Depth model: trying NNAPI")
+                try {
+                    val nnApiOptions = Interpreter.Options()
+                    nnApiDelegate = StartupTrace.measure("DepthEstimator.NnApiDelegate()") {
+                        val delegateOptions = NnApiDelegate.Options()
+                        delegateCache?.let {
+                            delegateOptions
+                                .setCacheDir(it.directory.absolutePath)
+                                .setModelToken(it.modelToken)
+                        }
+                        NnApiDelegate(delegateOptions)
+                    }
+                    StartupTrace.measure("DepthEstimator.nnApiOptions.addDelegate") {
+                        nnApiOptions.addDelegate(nnApiDelegate)
+                    }
+                    interpreter = StartupTrace.measure("DepthEstimator.Interpreter(NNAPI)") {
+                        Interpreter(modelBuffer, nnApiOptions)
+                    }
+                    isInitialized = true
+                    PLog.d(TAG, "Using NNAPI (NPU) for depth model")
+                } catch (e: Exception) {
+                    PLog.w(TAG, "Failed to initialize NNAPI delegate, falling back to CPU", e)
+                    nnApiDelegate?.close()
+                    nnApiDelegate = null
                 }
-                interpreter = StartupTrace.measure("DepthEstimator.Interpreter(NNAPI)") {
-                    Interpreter(modelBuffer, nnApiOptions)
-                }
-                isInitialized = true
-                PLog.d(TAG, "Using NNAPI (NPU) for depth model")
-            } catch (e: Exception) {
-                PLog.w(TAG, "Failed to initialize NNAPI delegate, falling back to CPU", e)
-                nnApiDelegate?.close()
-                nnApiDelegate = null
             }
 
             // Fallback to CPU
@@ -336,6 +372,8 @@ class DepthEstimator(context: Context) {
     fun close() {
         interpreter?.close()
         interpreter = null
+        gpuDelegate?.close()
+        gpuDelegate = null
         nnApiDelegate?.close()
         nnApiDelegate = null
         isInitialized = false

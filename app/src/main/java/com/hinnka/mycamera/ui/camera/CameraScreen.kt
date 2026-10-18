@@ -251,6 +251,7 @@ fun CameraScreen(
     val enableDevelopAnimation by viewModel.enableDevelopAnimation.collectAsState()
     val developAnimationStyle by viewModel.developAnimationStyle.collectAsState()
     val phantomMode by viewModel.phantomMode.collectAsState()
+    val useHighRes50Mp by viewModel.useHighRes50Mp.collectAsState()
     val topSheetAspectRatios by viewModel.topSheetAspectRatios.collectAsState()
     val videoCodec by viewModel.videoCodec.collectAsState()
     val videoAudioInputOptions by viewModel.videoAudioInputOptions.collectAsState()
@@ -1751,6 +1752,9 @@ fun CameraScreen(
             onJpgMaxToggle = {
                 viewModel.setUseJpgMax(it)
             },
+            is50MpSupported = state.is50MpSupported,
+            useHighRes50Mp = useHighRes50Mp,
+            onHighRes50MpToggle = { viewModel.setUseHighRes50Mp(it) },
             useMultipleExposure = useMultipleExposure,
             onMultipleExposureToggle = { viewModel.setUseMultipleExposure(it) },
             contentTopPadding = CameraTopBarBaseTopPadding + topSafePadding
